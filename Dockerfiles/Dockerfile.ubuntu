@@ -7,6 +7,7 @@ RUN apt update && apt upgrade -y && \
 # Create a non-root user
 RUN adduser --disabled-password --gecos "" developer && \
     echo "developer:1234" | chpasswd && \
+    echo "root:1234" | chpasswd && \
     usermod -aG sudo developer
 
 # Switch to the non-root user

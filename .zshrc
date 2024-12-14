@@ -73,7 +73,7 @@ ZSH_THEME="agnoster"
 plugins=(git zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
-
+source ~/.zsh_profile
 # User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"
@@ -100,5 +100,14 @@ source $ZSH/oh-my-zsh.sh
 # For a full list of active aliases, run `alias`.
 #
 # Example aliases
+alias n="nvim ."
+alias code="nvim "
+
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+# bun completions
+[ -s "/home/kirito/.bun/_bun" ] && source "/home/kirito/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
