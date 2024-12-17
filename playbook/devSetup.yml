@@ -1,11 +1,9 @@
----
-- name: Setting up devSetup
-  hosts: localhost
-  tasks:
     - name: Install necessary packages
       ansible.builtin.package:
         name:
           - curl
+          - man-db
+          - luajit
           - zsh
           - fzf
           - ripgrep
