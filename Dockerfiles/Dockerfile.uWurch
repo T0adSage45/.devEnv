@@ -1,0 +1,30 @@
+# Use the latest Arch Linux image
+FROM archlinux:latest
+
+# Update the package list and install required tools
+RUN pacman -Syu --noconfirm && \
+    pacman -S --noconfirm sudo openssh ansible base-devel && \
+    pacman -Scc --noconfirm
+
+# Add a non-root user with sudo privileges
+RUN useradd -m -G wheel developer && \
+    echo "developer:1234" | chpasswd && \
+    echo "root:1234" | chpasswd && \
+    echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers
+
+# Switch to the non-root user
+USER developer
+WORKDIR /home/developer
+
+# Expose the default SSH port (if you need SSH access)
+# EXPOSE 22
+
+# Configure OpenSSH (commented out)
+# RUN sudo mkdir /var/run/sshd && \
+#     echo "PermitRootLogin yes" | sudo tee -a /etc/ssh/sshd_config && \
+#     echo "PasswordAuthentication yes" | sudo tee -a /etc/ssh/sshd_config && \
+#     echo "PermitEmptyPasswords no" | sudo tee -a /etc/ssh/sshd_config
+
+# Start the SSH service by default (commented out)
+# CMD ["/usr/sbin/sshd", "-D"]
+

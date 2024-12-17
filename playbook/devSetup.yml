@@ -1,0 +1,58 @@
+---
+- name: Setting up devSetup
+  hosts: localhost
+  tasks:
+    - name: Install necessary packages
+      ansible.builtin.package:
+        name:
+          - curl
+          - zsh
+          - fzf
+          - ripgrep
+          - git
+          - luarocks
+          - bat
+          - tmux
+          - neovim
+          - stow
+        state: present
+      when: ansible_os_family in ['Debian', 'RedHat', 'Archlinux', 'Suse']
+      become: yes
+
+    - name: Install oh-my-zsh non-interactively if not installed
+      ansible.builtin.shell: |
+        if [ ! -d ~/.oh-my-zsh ]; then
+          curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh -s -- --unattended
+        fi
+      become: false
+
+    - name: Install zsh-autosuggestions
+      ansible.builtin.git:
+        repo: https://github.com/zsh-users/zsh-autosuggestions
+        dest: "~/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
+      become: false
+
+    - name: Change default shell to zsh
+      ansible.builtin.shell: chsh -s /usr/bin/zsh
+      become: yes
+
+    - name: Ensure devenv directory exists
+      ansible.builtin.stat:
+        path: "~/.devEnv"
+      register: devenv_dir
+
+    - name: Fail if devenv directory is missing
+      ansible.builtin.fail:
+        msg: "~/.devEnv directory does not exist!"
+      when: not devenv_dir.stat.exists
+
+    - name: Remove existing .zshrc
+      ansible.builtin.file:
+        path: ~/.zshrc
+        state: absent
+
+    - name: Stowing files
+      ansible.builtin.shell: |
+        cd ~/.devEnv && stow /
+      become: false
+
